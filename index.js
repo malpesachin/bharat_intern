@@ -1,20 +1,24 @@
-const express = require("express");
+ const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser =require("body-parser");
+const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 
 const app = express();
+
 dotenv.config();
 
-const port =process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
+const username = process.env.MONGODB_USERNAME; // Make sure to set this in your environment
+const password = process.env.MONGODB_PASSWORD; // Make sure to set this in your environment
+const dbName = process.env.MONGODB_DBNAME; // Make sure to set this in your environment
 
-const username=process.env.MONGODB_USERNAME;
-const password=process.env.MONGODB_PASSWORD;
+// Corrected MongoDB connection URI
+const uri = `mongodb+srv://${username}:${password}@cluster0.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
-mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.jdiubqa.mongodb.net/registratiionFormDB`,{
-    useNewUrlParser:true,
-    useUnifiedTopology:true,
-});
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
+
 
 const registrationSchema = new mongoose.Schema({
     name: String,
