@@ -1,4 +1,4 @@
- const express = require("express");
+const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
@@ -10,12 +10,17 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 const username = process.env.MONGODB_USERNAME; // Make sure to set this in your environment
 const password = process.env.MONGODB_PASSWORD; // Make sure to set this in your environment
-const dbName = process.env.MONGODB_DBNAME; // Make sure to set this in your environment
+ 
 
 // Corrected MongoDB connection URI
-const uri = `mongodb+srv://${username}:${password}@cluster0.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
+
+mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.jdiubqa.mongodb.net/registrationFormDB`, { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+ });
 
 
 
@@ -32,19 +37,15 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 
-app.listen(port,()=>{
-    console.log(`server is running on port ${port}`)
-});
-
 app.get("/", (req,res)=>{
     res.sendFile(__dirname + "/index.html");
 });
 
 app.post("/register", async(req,res)=>{
     try{
-        const {name , email , password} = req.body
+        const {name , email , password} = req.body;
         
-        const existingUser =await Registration.findOne({email:email});
+        const existingUser = await Registration.findOne({email:email});
         if(!existingUser){
             const registrationData =new Registration({
                 name,
@@ -55,8 +56,8 @@ app.post("/register", async(req,res)=>{
             res.redirect("/success") 
         }
         else{
-            console.log("User already exist")
-            res.redirect("/error")
+            console.log("User already exist");
+            res.redirect("/error");
         }
 
       
@@ -67,13 +68,18 @@ app.post("/register", async(req,res)=>{
         console.log("error");
         res.redirect("/error");
     }
-})
+});
 
 app.get("/success",(req,res)=>{
-    res.sendFile(__dirname + "/success.html");
+    res.sendFile(__dirname + "/pages/success.html");
 })
 
 
 app.get("/error",(req,res)=>{
-    res.sendFile(__dirname + "/error.html");
-})
+    res.sendFile(__dirname + "/pages/error.html");
+});
+
+
+app.listen(port,()=>{
+    console.log(`server is running on port ${port}`);
+});
